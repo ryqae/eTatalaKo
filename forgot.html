@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Forgot Password</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body id="page-forgot">
+  <div class="card">
+    <h1>Forgot Password</h1>
+
+    <div class="form">
+      <input id="fpUsername" placeholder="Enter your username or number" />
+      <div class="row">
+        <button id="btnSendSms">Send SMS</button>
+        <button id="btnVerifySms">Verify Code</button>
+      </div>
+
+      <div id="notif" class="notification" aria-live="polite" style="display:none;"></div>
+
+      <input id="fpCode" placeholder="Enter 6-digit code" />
+
+      <div class="row">
+        <a href="login.html" class="link">Back to Login</a>
+      </div>
+    </div>
+  </div>
+
+<script src="script.js"></script>
+<script>
+  // page init
+  initCommon();
+
+  document.getElementById('btnSendSms').addEventListener('click', function(){
+    const userInput = document.getElementById('fpUsername').value.trim();
+    const creds = getStoredCreds();
+    if(userInput === '' || userInput !== creds.user){
+      alert('Enter correct username to send SMS.');
+      addAuditLog('Attempted Send SMS with wrong/empty username.');
+      return;
+    }
+    const code = generateAndStoreSms();
+    showNotification('📩 Your reset code is: ' + code );
+    addAuditLog('SMS code generated for user.');
+  });
+
+  document.getElementById('btnVerifySms').addEventListener('click', function(){
+    const entered = document.getElementById('fpCode').value.trim();
+    const stored = sessionStorage.getItem('smsCode');
+    if(!stored){
+      alert('No SMS code generated yet. Click Send SMS.');
+      return;
+    }
+    if(entered === stored){
+      // mark session logged in and redirect to home
+      sessionStorage.setItem('loggedIn','true');
+      sessionStorage.setItem('username', getStoredCreds().user);
+      sessionStorage.removeItem('smsCode'); // one-time
+      addAuditLog('SMS verified. Auto-logged in from Forgot Password.');
+      location.href = 'home.html';
+    } else {
+      alert('Incorrect code.');
+      addAuditLog('Failed SMS verification attempt.');
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Login</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body id="page-login">
+  <div class="card">
+    <h1><em>eTatala Ko</em></h1>
+    <div class="form">
+      <input id="loginUsername" placeholder="Username" />
+      <input id="loginPassword" type="password" placeholder="Password" />
+      <div class="row">
+        <button id="btnLogin">Login</button>
+        <a href="forgot.html" class="link">Forgot Password?</a>
+      </div>
+    </div>
+  </div>
+
+<script src="script.js"></script>
+<script>
+  // page init
+  initCommon();
+
+  document.getElementById('btnLogin').addEventListener('click', function(){
+    const u = document.getElementById('loginUsername').value.trim();
+    const p = document.getElementById('loginPassword').value;
+    const creds = getStoredCreds();
+    if(u === creds.user && p === creds.pass){
+      // set session and go to home
+      sessionStorage.setItem('loggedIn','true');
+      sessionStorage.setItem('username', u);
+      addAuditLog('User logged in (credentials).');
+      location.href = 'home.html';
+    } else {
+      alert('Incorrect username or password.');
+      addAuditLog('Failed login attempt.');
+    }
+  });
+</script>
+</body>
+</html>

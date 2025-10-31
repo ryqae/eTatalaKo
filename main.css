@@ -1,0 +1,61 @@
+:root{
+  --bg:#f6ecff;
+  --card:#f4ebff;
+  --accent:#9b6bff;
+  --muted:#7e58b8;
+  --white:#ffffff;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter, Arial, sans-serif;
+  background:var(--bg);
+  color:var(--muted);
+}
+
+/* Card */
+.card{
+  width:320px;
+  margin:60px auto;
+  padding:18px;
+  background:var(--card);
+  border-radius:12px;
+  box-shadow:0 6px 18px rgba(150,100,220,0.12);
+  text-align:center;
+}
+
+.card h1{color:var(--accent); margin-bottom:12px}
+.form input{display:block; margin:8px auto; padding:10px; width:86%; border-radius:8px; border:1px solid rgba(150,100,220,0.25)}
+.row{display:flex; justify-content:center; gap:10px; margin-top:8px}
+button{background:var(--accent); color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer}
+.link{color:var(--muted); text-decoration:none; align-self:center; padding-top:10px}
+.note{font-size:12px; color:#5a3c7e; margin-top:8px}
+
+/* Home layout */
+.top{display:flex; justify-content:space-between; align-items:center; padding:12px 20px}
+.top h1{margin:0; color:var(--accent)}
+.wrapper{display:flex; gap:18px; padding:12px 20px}
+.left{flex:1}
+.right{width:300px}
+textarea{width:100%; height:140px; padding:10px; border-radius:8px; border:1px solid rgba(150,100,220,0.15)}
+input{padding:10px; border-radius:8px; border:1px solid rgba(150,100,220,0.15)}
+.box-scroll{height:160px; overflow:auto; background:#fff; padding:8px; border-radius:8px; border:1px solid rgba(150,100,220,0.08)}
+.btn-logout{background:#ff8fa8}
+
+/* small screens */
+@media(max-width:880px){
+  .wrapper{flex-direction:column}
+  .right{width:100%}
+}
+
+/* Notification in forgot page */
+.notification{
+  margin:8px auto;
+  width:86%;
+  padding:8px;
+  background:#efe1ff;
+  border-radius:8px;
+  color:#4a2b6d;
+  border:1px solid #d6b9ff;
+}

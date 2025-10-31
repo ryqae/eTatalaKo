@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Home</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body id="page-home">
+  <div class="top">
+    <h1><em>eTatala Ko</em></h1>
+    <div class="user">Welcome, <span id="who"></span></div>
+    <button id="btnLogout" class="btn-logout">Logout</button>
+  </div>
+
+  <main class="wrapper">
+    <section class="left">
+      <input id="search" placeholder="Search" />
+      <textarea id="entry" placeholder="eTala mo..."></textarea>
+      <div class="row">
+        <button id="btnSave">Save (Encrypt)</button>
+        <button id="btnDecrypt">View Last (Decrypt)</button>
+      </div>
+    </section>
+
+    <aside class="right">
+      <h3>Audit Logs</h3>
+      <div id="auditBox" class="box-scroll"></div>
+
+      <h3>Behavior Analytics</h3>
+      <div id="behaviorBox" class="box-scroll"></div>
+    </aside>
+  </main>
+
+<script src="script.js"></script>
+<script>
+  initCommon();
+
+  // Auth guard: if not logged in, redirect to login
+  if(sessionStorage.getItem('loggedIn') !== 'true'){
+    location.href = 'login.html';
+  } else {
+    document.getElementById('who').innerText = sessionStorage.getItem('username') || 'User';
+  }
+
+  // display existing logs
+  refreshAuditUI();
+  refreshBehaviorUI();
+
+  // Save encrypted entry
+  document.getElementById('btnSave').addEventListener('click', function(){
+    const text = document.getElementById('entry').value.trim();
+    if(!text){
+      alert('Cannot save empty.');
+      return;
+    }
+    const enc = encrypt(text);
+    saveEntryToStorage(enc);
+    addAuditLog('Journal saved (encrypted).');
+    alert('Saved (encrypted).');
+    document.getElementById('entry').value = '';
+    refreshAuditUI();
+  });
+
+  // View last entry decrypted
+  document.getElementById('btnDecrypt').addEventListener('click', function(){
+    const last = getLastEntry();
+    if(!last){
+      alert('No saved entries.');
+      return;
+    }
+    const dec = decrypt(last.encrypted);
+    alert('Last entry (decrypted):\n\n' + dec);
+    addAuditLog('Viewed last entry (decrypted).');
+    refreshAuditUI();
+  });
+
+  // Search sanitization
+  document.getElementById('search').addEventListener('input', function(e){
+    e.target.value = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
+  });
+
+  // Logout button
+  document.getElementById('btnLogout').addEventListener('click', function(){
+    addAuditLog('User logged out (manual).');
+    doLogout();
+  });
+
+  // Inactivity auto-logout (5 minutes) and behavior analytics
+  startInactivityMonitor();
+  setupBehaviorAnalytics();
+  setupInputMonitor();
+  // initial UI refresh
+  refreshAuditUI();
+  refreshBehaviorUI();
+</script>
+</body>
+</html>
